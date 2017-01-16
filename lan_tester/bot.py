@@ -1,25 +1,19 @@
 import configparser
 from telegram import Bot, ParseMode
 from lan_tester.tools import create_serialize_list_of_hosts
-
+from lan_tester.model import Model
 
 class TelegramBotAlert:
+
+    model = Model()
 
     def __init__(self):
         config = configparser.ConfigParser()
         config.read('settings.ini')
 
-        self.__list_of_chat_ids = self.get_chat_ids()
+        self.__list_of_chat_ids = self.model.get_chat_ids()
         self.__token = config.get("TELEGRAM", "token")
         self.__bot = Bot(token=self.__token)
-
-    def get_chat_ids(self):
-        list_of_chat_ids = []
-        f = open("datas/chat_ids.txt", "r")
-        for line in f:
-            list_of_chat_ids.append(line.replace("\n", ""))
-        f.close()
-        return list_of_chat_ids
 
     def create_alert_message(self, list_of_alredy_online_hosts, list_of_offline_hosts):
         message = ""

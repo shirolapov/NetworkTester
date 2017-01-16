@@ -1,27 +1,28 @@
 import sys
 import logging
 from lan_tester.tester import Tester
-from lan_tester.datafile import DataFile
 from lan_tester.tools import compare_hosts, create_serialize_list_of_hosts, compare_lists_of_hosts
 from lan_tester.bot import TelegramBotAlert
+from lan_tester.model import Model
 
 
 logging.basicConfig(filename='logs/history.log', format='%(asctime)s - %(levelname)s - %(message)s',
-                    datefmt='%d/%m/%Y %H:%M:%S', level=logging.INFO)
+                    datefmt='%d/%m/%Y %H:%M:%S', level=logging.DEBUG)
 
 
 class Main:
 
     def __init__(self, parameters):
+        self.model = Model()
         tester = Tester("datas/hosts_list.json")
         tbot = TelegramBotAlert()
 
-        self.__list_of_offline_host_in_past = DataFile.get_host_from_data_file()
+        self.__list_of_offline_host_in_past = self.model.get_host_from_data_file()
         self.__list_of_online_hosts = tester.get_list_of_online_host()
         self.__list_of_alredy_online_hosts = self.__create_list_of_alredy_online_hosts()
         self.__list_of_offline_hosts = tester.get_list_of_offline_host()
 
-        DataFile.clear_data_file()
+        self.model.clear_data()
 
         if len(self.__list_of_alredy_online_hosts) > 0:
             self.__have_alredy_online_hosts()
@@ -73,7 +74,7 @@ class Main:
         for group in serialize_list:
             print("Group name: {groupname}".format(groupname=group))
             for host in serialize_list[group]:
-                DataFile.write_offline_host(host)
+                self.model.write_offline_host(host)
                 print("\t{hostname}, {hostip}".format(hostname=host.get_name(), hostip=host.get_ip()))
                 logging.warning("Group: {grouphost}, Host: {hostname}, IP: "
                                 "{hostip} - is offline".format(grouphost=host.get_group(),
