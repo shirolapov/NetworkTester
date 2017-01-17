@@ -1,7 +1,13 @@
 import configparser
+import logging
 from telegram import Bot, ParseMode
 from lan_tester.tools import create_serialize_list_of_hosts
 from lan_tester.model import Model
+
+
+logging.basicConfig(filename='logs/python-telegram-bot.log', format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%d/%m/%Y %H:%M:%S', level=logging.DEBUG)
+
 
 class TelegramBotAlert:
 
