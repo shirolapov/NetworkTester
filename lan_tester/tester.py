@@ -1,33 +1,33 @@
-import json
 from subprocess import call
-from lan_tester.host import Host
+from lan_tester.model import Model
 
 
 class Tester:
+    __list_of_host = []
+    __list_of_checked_host = []
+    __list_of_online_host = []
+    __list_of_offline_host = []
+    __file = ""
 
     def __init__(self, file):
+        self.__file = file
+        self.model = Model()
+
+    def ping_all_hosts(self):
         self.__list_of_host = []
         self.__list_of_checked_host = []
         self.__list_of_online_host = []
         self.__list_of_offline_host = []
 
-        self.__get_list_of_hosts(file)  # Get list of all host (object host) from JSON file
-        self.__ping_all_hosts()  # Ping of all host from __list_of_host
-        self.__create_list_of_online_and_offline_hosts()
+        self.__list_of_host = self.model.get_hosts_list(self.__file)  # Get list of all host (object host) from JSON file
 
-    def __get_list_of_hosts(self, file):
-        f = open(file)
-        data = json.load(f)
-        for group in data:
-            for host in data[group]:
-                self.__list_of_host.append(Host(group, host, data[group][host]))
-
-    def __ping_all_hosts(self):
         for host in self.__list_of_host:
             print("Ping: {hostname}, from {groupname}".format(hostname=host.get_name(), groupname=host.get_group()))
             result = self.ping(host)
             print("Result: {result}\n".format(result=result))
             self.__list_of_checked_host.append(host)
+
+        self.__create_list_of_online_and_offline_hosts()
 
     @staticmethod
     def ping(host):

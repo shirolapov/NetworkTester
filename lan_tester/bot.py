@@ -5,9 +5,9 @@ from lan_tester.model import Model
 
 class TelegramBotAlert:
 
-    model = Model()
 
     def __init__(self):
+        self.model = Model()
         config = configparser.ConfigParser()
         config.read('settings.ini')
 
@@ -48,6 +48,9 @@ class TelegramBotAlert:
             message += "\n"
         return message
 
-    def send_message(self, message):
-        for chat_id in self.__list_of_chat_ids:
-            self.__bot.send_message(chat_id=str(chat_id), text=message, parse_mode=ParseMode.HTML)
+    def send_message(self, message, send_to="All"):
+        if send_to == "All":
+            for chat_id in self.__list_of_chat_ids:
+                self.__bot.send_message(chat_id=str(chat_id), text=message, parse_mode=ParseMode.HTML)
+        else:
+            self.__bot.send_message(chat_id=str(send_to), text=message, parse_mode=ParseMode.HTML)

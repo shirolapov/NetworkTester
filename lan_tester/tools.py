@@ -6,6 +6,7 @@ def compare_hosts(host1, host2):
     else:
         return False
 
+
 def create_serialize_list_of_hosts(list_of_hosts):
     list_of_groups = []
     for host_obj in list_of_hosts:
@@ -25,11 +26,13 @@ def create_serialize_list_of_hosts(list_of_hosts):
 
     return get_serialize_list()
 
-def check_exist_host_in_list(host, list):
-    for host_from_list in list:
+
+def check_exist_host_in_list(host, list_with_hosts):
+    for host_from_list in list_with_hosts:
         if compare_hosts(host_from_list, host):
             return True
     return False
+
 
 def compare_lists_of_hosts(list1, list2):
     if not len(list1) == len(list2):
@@ -40,3 +43,14 @@ def compare_lists_of_hosts(list1, list2):
             return False
 
     return True
+
+
+def create_list_of_alredy_online_hosts(list_of_online_hosts, list_of_offline_host_in_past):
+    list_of_alredy_online_hosts = []
+
+    for online_host in list_of_online_hosts:
+        for offline_host_in_past in list_of_offline_host_in_past:
+            if compare_hosts(online_host, offline_host_in_past):
+                list_of_alredy_online_hosts.append(online_host)
+
+    return list_of_alredy_online_hosts

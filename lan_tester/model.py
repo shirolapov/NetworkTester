@@ -1,5 +1,6 @@
-import sqlite3
 import os
+import json
+import sqlite3
 from lan_tester.host import Host
 
 
@@ -91,3 +92,17 @@ class Model:
                 return True
         else:
             return False
+
+    def get_hosts_list(self, file):
+        hosts_list = []
+        f = open(file)
+        data = json.load(f)
+        for group in data:
+            for host in data[group]:
+                hosts_list.append(Host(group, host, data[group][host]))
+        return hosts_list
+
+    def write_list_of_offline_hosts(self, list_of_offline_hosts):
+        for host in list_of_offline_hosts:
+            if not self.check_exist_host_in_data_file(host):
+                self.write_offline_host(host)
